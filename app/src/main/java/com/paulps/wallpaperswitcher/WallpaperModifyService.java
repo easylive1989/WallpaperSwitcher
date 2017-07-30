@@ -31,12 +31,16 @@ public class WallpaperModifyService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         mWallpaperManager = WallpaperManager.getInstance(getApplicationContext());
+        setWallpaper(mWallpaperManager);
+    }
+
+    private void setWallpaper(WallpaperManager wallpaperManager) {
         try {
             if (isCurrentWpNormal()) {
-                mWallpaperManager.setResource(DEFAULT_WP_ANIM);
+                wallpaperManager.setResource(DEFAULT_WP_ANIM);
                 setCurrentWpRes(DEFAULT_WP_ANIM);
             } else {
-                mWallpaperManager.setResource(DEFAULT_WP_NORMAL);
+                wallpaperManager.setResource(DEFAULT_WP_NORMAL);
                 setCurrentWpRes(DEFAULT_WP_NORMAL);
             }
         } catch (IOException e) {
