@@ -17,10 +17,8 @@ import android.view.View;
 
 import java.io.File;
 
-public class SettingActivity extends Activity {
+public class SettingActivity extends PermissionRequestActivity {
     private static final String TAG = SettingActivity.class.getSimpleName();
-
-    private final int REQUEST_PERMISSION = 123;
 
     private int mAppWidgetId = 0;
 
@@ -35,33 +33,8 @@ public class SettingActivity extends Activity {
         mAppWidgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                                                 AppWidgetManager.INVALID_APPWIDGET_ID);
 
-        checkAndRequestPermission();
-    }
-
-    private void checkAndRequestPermission() {
-        if (hasPermissions( Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{   Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                        Manifest.permission.READ_EXTERNAL_STORAGE},
-                        REQUEST_PERMISSION);
-        }
-    }
-
-    private boolean hasPermissions(String... permissions) {
-        boolean hasAllPermissions = false;
-        for(String permission : permissions) {
-            hasAllPermissions &= ContextCompat.checkSelfPermission(this, permission)
-                    != PackageManager.PERMISSION_GRANTED;
-        }
-        return hasAllPermissions;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            finish();
-        }
+        ensurePermissions(  Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     public void onDoneClick(View view) {
@@ -114,7 +87,6 @@ public class SettingActivity extends Activity {
                 String fileName = reqCode == REQUEST_WP1_IMAGE_SELECT ?
                         WallpaperModifyService.DEFAULT_WP_1 :
                         WallpaperModifyService.DEFAULT_WP_2;
-                android.util.Log.d(TAG, DirPathUtils.getCacheDir(getActivity()).getPath() + File.separator + fileName);
                 FileUtils.copy(getActivity(), cropImageFile, DirPathUtils.getCacheDir(getActivity()).getPath() + File.separator +  fileName);
             }
         }

@@ -32,20 +32,23 @@ public class WallpaperModifyService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         mWallpaperManager = WallpaperManager.getInstance(getApplicationContext());
-        setWallpaper(mWallpaperManager);
+        setWallpaper();
     }
 
-    private void setWallpaper(WallpaperManager wallpaperManager) {
-        try {
+    private void setWallpaper() {
             if (isCurrentWp1()) {
-                Bitmap bitmap = BitmapFactory.decodeFile(DirPathUtils.getCacheDir(this).getPath() + File.separator +  DEFAULT_WP_2);
-                wallpaperManager.setBitmap(bitmap);
+                setWallpaper(DEFAULT_WP_1);
                 setCurrentWpRes(DEFAULT_WP_2);
             } else {
-                Bitmap bitmap = BitmapFactory.decodeFile(DirPathUtils.getCacheDir(this).getPath() + File.separator +  DEFAULT_WP_1);
-                wallpaperManager.setBitmap(bitmap);
+                setWallpaper(DEFAULT_WP_2);
                 setCurrentWpRes(DEFAULT_WP_1);
             }
+    }
+
+    private void setWallpaper(String wallpaper) {
+        try {
+            Bitmap bitmap = BitmapFactory.decodeFile(DirPathUtils.getCacheDir(this).getPath() + File.separator +  wallpaper);
+            mWallpaperManager.setBitmap(bitmap);
         } catch (IOException e) {
             e.printStackTrace();
         }
