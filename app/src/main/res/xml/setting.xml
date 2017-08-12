@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:key="setWp1"
+        android:title="@string/setting_wp_1_title"
+        android:summary="@string/setting_wp_summary">
+        <intent
+            android:action="android.intent.action.GET_CONTENT"
+            android:mimeType="image/*" />
+    </Preference>
+
+    <Preference
+        android:key="setWp2"
+        android:title="@string/setting_wp_2_title"
+        android:summary="@string/setting_wp_summary">
+        <intent
+            android:action="android.intent.action.GET_CONTENT"
+            android:mimeType="image/*" />
+    </Preference>
+
+    <Preference
+        android:key="done"
+        android:widgetLayout="@layout/view_item_setting_done" />
+</PreferenceScreen>

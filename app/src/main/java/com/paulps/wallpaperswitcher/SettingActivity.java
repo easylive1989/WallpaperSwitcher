@@ -1,13 +1,122 @@
 package com.paulps.wallpaperswitcher;
 
-import android.support.v7.app.AppCompatActivity;
+import android.Manifest;
+import android.app.Activity;
+import android.app.WallpaperManager;
+import android.appwidget.AppWidgetManager;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.preference.Preference;
+import android.preference.PreferenceFragment;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
 
-public class SettingActivity extends AppCompatActivity {
+import java.io.File;
+
+public class SettingActivity extends Activity {
+    private static final String TAG = SettingActivity.class.getSimpleName();
+
+    private final int REQUEST_PERMISSION = 123;
+
+    private int mAppWidgetId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
+
+        getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new SettingsFragment())
+                .commit();
+
+        mAppWidgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                                                AppWidgetManager.INVALID_APPWIDGET_ID);
+
+        checkAndRequestPermission();
+    }
+
+    private void checkAndRequestPermission() {
+        if (hasPermissions( Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{   Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                        Manifest.permission.READ_EXTERNAL_STORAGE},
+                        REQUEST_PERMISSION);
+        }
+    }
+
+    private boolean hasPermissions(String... permissions) {
+        boolean hasAllPermissions = false;
+        for(String permission : permissions) {
+            hasAllPermissions &= ContextCompat.checkSelfPermission(this, permission)
+                    != PackageManager.PERMISSION_GRANTED;
+        }
+        return hasAllPermissions;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            finish();
+        }
+    }
+
+    public void onDoneClick(View view) {
+        Intent intent = new Intent();
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    public static class SettingsFragment extends PreferenceFragment {
+
+        private final String PREFERENCE_SET_WP1 = "setWp1";
+        private final String PREFERENCE_SET_WP2 = "setWp2";
+
+        private final int REQUEST_WP1_IMAGE_SELECT = 1234;
+        private final int REQUEST_WP2_IMAGE_SELECT = 1235;
+
+        private WallpaperManager mWallpaperManager;
+
+        private Preference.OnPreferenceClickListener mOnSetWpPrefClick =  new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                int requestCode = preference.getKey().equals(PREFERENCE_SET_WP1) ?
+                        REQUEST_WP1_IMAGE_SELECT :
+                        REQUEST_WP2_IMAGE_SELECT;
+                startActivityForResult(preference.getIntent(), requestCode);
+                return true;
+            }
+        };
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            mWallpaperManager = WallpaperManager.getInstance(getActivity());
+
+            addPreferencesFromResource(R.xml.setting);
+
+            Preference setWp1Pref = findPreference(PREFERENCE_SET_WP1);
+            setWp1Pref.setOnPreferenceClickListener(mOnSetWpPrefClick);
+            Preference setWp2Pref = findPreference(PREFERENCE_SET_WP2);
+            setWp2Pref.setOnPreferenceClickListener(mOnSetWpPrefClick);
+        }
+
+        @Override
+        public void onActivityResult(int reqCode, int resCode, Intent data) {
+            if (reqCode == REQUEST_WP1_IMAGE_SELECT || reqCode == REQUEST_WP2_IMAGE_SELECT) {
+                Uri imageUri = data.getData();
+                File cropImageFile = FileUtils.getFile(getActivity(), imageUri);
+                String fileName = reqCode == REQUEST_WP1_IMAGE_SELECT ?
+                        WallpaperModifyService.DEFAULT_WP_1 :
+                        WallpaperModifyService.DEFAULT_WP_2;
+                android.util.Log.d(TAG, DirPathUtils.getCacheDir(getActivity()).getPath() + File.separator + fileName);
+                FileUtils.copy(getActivity(), cropImageFile, DirPathUtils.getCacheDir(getActivity()).getPath() + File.separator +  fileName);
+            }
+        }
     }
 }

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">WallpaperSwitcher</string>
+
+    <string name="setting_wp_1_title">First Wallpaper</string>
+    <string name="setting_wp_summary">Choose a wallpaper</string>
+    <string name="setting_wp_2_title">Second Wallpaper</string>
+    <string name="setting_done_btn_title">Done</string>
 </resources>

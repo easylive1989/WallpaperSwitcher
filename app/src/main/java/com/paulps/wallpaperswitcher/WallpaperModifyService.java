@@ -11,16 +11,17 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.io.File;
 import java.io.IOException;
 
 public class WallpaperModifyService extends IntentService {
     private static final String TAG = WallpaperModifyService.class.getSimpleName();
 
     private static final String PREFERENCE_TABLE_GLOBAL = "PreferenceGlobal";
-    private static final String PREFERENCE_KEY_WP_RES = "WallpaperResource";
+    private static final String PREFERENCE_KEY_WP_NAME = "WallpaperName";
 
-    private final int DEFAULT_WP_ANIM = R.raw.default_wallpaper_anim;
-    private final int DEFAULT_WP_NORMAL = R.raw.default_wallpaper_normal;
+    public static final String DEFAULT_WP_1 = "Wp1";
+    public static final String DEFAULT_WP_2 = "Wp2";
 
     private WallpaperManager mWallpaperManager;
 
@@ -36,29 +37,31 @@ public class WallpaperModifyService extends IntentService {
 
     private void setWallpaper(WallpaperManager wallpaperManager) {
         try {
-            if (isCurrentWpNormal()) {
-                wallpaperManager.setResource(DEFAULT_WP_ANIM);
-                setCurrentWpRes(DEFAULT_WP_ANIM);
+            if (isCurrentWp1()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(DirPathUtils.getCacheDir(this).getPath() + File.separator +  DEFAULT_WP_2);
+                wallpaperManager.setBitmap(bitmap);
+                setCurrentWpRes(DEFAULT_WP_2);
             } else {
-                wallpaperManager.setResource(DEFAULT_WP_NORMAL);
-                setCurrentWpRes(DEFAULT_WP_NORMAL);
+                Bitmap bitmap = BitmapFactory.decodeFile(DirPathUtils.getCacheDir(this).getPath() + File.separator +  DEFAULT_WP_1);
+                wallpaperManager.setBitmap(bitmap);
+                setCurrentWpRes(DEFAULT_WP_1);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private boolean isCurrentWpNormal() {
-        return getCurrentWpRes() == DEFAULT_WP_NORMAL;
+    private boolean isCurrentWp1() {
+        return getCurrentWpRes().equals(DEFAULT_WP_1);
     }
 
-    private int getCurrentWpRes() {
+    private String getCurrentWpRes() {
         SharedPreferences sp = getApplicationContext().getSharedPreferences(PREFERENCE_TABLE_GLOBAL, Context.MODE_PRIVATE);
-        return sp.getInt(PREFERENCE_KEY_WP_RES, 0);
+        return sp.getString(PREFERENCE_KEY_WP_NAME, "");
     }
 
-    private void setCurrentWpRes(int wpRes) {
+    private void setCurrentWpRes(String wpName) {
         SharedPreferences sp = getApplicationContext().getSharedPreferences(PREFERENCE_TABLE_GLOBAL, Context.MODE_PRIVATE);
-        sp.edit().putInt(PREFERENCE_KEY_WP_RES, wpRes).commit();
+        sp.edit().putString(PREFERENCE_KEY_WP_NAME, wpName).commit();
     }
 }
