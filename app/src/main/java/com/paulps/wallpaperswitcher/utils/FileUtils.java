@@ -1,4 +1,4 @@
-package com.paulps.wallpaperswitcher;
+package com.paulps.wallpaperswitcher.utils;
 
 import android.content.ContentUris;
 import android.content.Context;

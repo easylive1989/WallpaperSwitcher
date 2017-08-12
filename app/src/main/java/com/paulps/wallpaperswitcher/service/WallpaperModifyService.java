@@ -1,4 +1,4 @@
-package com.paulps.wallpaperswitcher;
+package com.paulps.wallpaperswitcher.service;
 
 import android.app.IntentService;
 import android.app.WallpaperManager;
@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
-import android.util.Log;
+
+import com.paulps.wallpaperswitcher.utils.DirPathUtils;
 
 import java.io.File;
 import java.io.IOException;

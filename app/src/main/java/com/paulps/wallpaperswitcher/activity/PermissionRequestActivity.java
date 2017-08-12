@@ -1,4 +1,4 @@
-package com.paulps.wallpaperswitcher;
+package com.paulps.wallpaperswitcher.activity;
 
 import android.Manifest;
 import android.app.Activity;

@@ -1,19 +1,19 @@
-package com.paulps.wallpaperswitcher;
+package com.paulps.wallpaperswitcher.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
+
+import com.paulps.wallpaperswitcher.R;
+import com.paulps.wallpaperswitcher.service.WallpaperModifyService;
+import com.paulps.wallpaperswitcher.utils.DirPathUtils;
+import com.paulps.wallpaperswitcher.utils.FileUtils;
 
 import java.io.File;
 

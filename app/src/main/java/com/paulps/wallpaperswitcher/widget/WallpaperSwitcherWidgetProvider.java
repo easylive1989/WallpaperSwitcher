@@ -1,4 +1,4 @@
-package com.paulps.wallpaperswitcher;
+package com.paulps.wallpaperswitcher.widget;
 
 
 import android.app.PendingIntent;
@@ -8,7 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
-public class ExampleAppWidgetProvider extends AppWidgetProvider {
+import com.paulps.wallpaperswitcher.R;
+import com.paulps.wallpaperswitcher.service.WallpaperModifyService;
+
+public class WallpaperSwitcherWidgetProvider extends AppWidgetProvider {
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
